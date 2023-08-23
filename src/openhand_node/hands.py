@@ -913,9 +913,9 @@ class Model_T(OpenHand):
 if __name__ == '__main__':
 	# T = Model_O([port name], [abduction servo[1] id], [right forward servo[2] id],[left reverse servo[3] id],[thumb servo[4] id], [Dynamixel series ("RX", "MX", "XM")])  
 	
-	T = Model_O("/dev/tty.usbserial-FT78LQOC",3,4,1,2, "XM", 0.0, 0.1, 0.1, 0.1)  
+	T = Model_O("/dev/ttyUSB0",3,4,1,2, "XM", 0.0, 0.1, 0.1, 0.1)  
 	# T.change_motor_min(0,0.0) #adduct
-	T.change_motor_min(1,0.4) #index
+	T.change_motor_min(1,0.41) #index
 	T.change_motor_min(2,-0.26) #middle
 	T.change_motor_min(3,0.15) #thumb
 
