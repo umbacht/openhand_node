@@ -11,6 +11,9 @@ import numpy as np	#for array handling
 import scipy.io
 import math
 from decimal import Decimal
+import pdb, sys
+from six.moves import input
+
 
 #Assumptions:
 	#only dynamixel servos being used
@@ -25,7 +28,7 @@ class OpenHand():
 	servo_ids = []
 	servos = []
 
-	servo_speed = 1.0
+	servo_speed = 0.1
 	max_torque = 0.4	#Dynamixel suggests capping max torque at 0.4 of stall torque
 
 	motorDir = []
@@ -81,21 +84,21 @@ class OpenHand():
 						print( "------------FAILSAFE-------------")
 						print( "Failsafe is incorporated to prevent gear shear in Model O")
 						print( "Motor encoder postion: ", enc)
-						input = raw_input("Your encoder position for motor index " + str(i) + " may cause the motor to move backwards and break gears. We recommend you resetting the fingers to prevent gear shear, proceed? [ENTER]")
+						input = input("Your encoder position for motor index " + str(i) + " may cause the motor to move backwards and break gears. We recommend you resetting the fingers to prevent gear shear, proceed? [ENTER]")
 					else:
 						print( "Motor directions not set...")
-				#These would then be the MX and XM motors
-				elif (self.motorDir[i] ==1 and enc > 2048) or (self.motorDir[i] == -1 and enc < 2048):
-					print( "------------FAILSAFE-------------")
-					print( "Failsafe is incorporated to prevent gear shear in Model O")
-					print( "Motor encoder postion: ", enc)
-					input = raw_input("As an XM Motor, we can automatically fix this issue for motor " + str(i) + ", proceed? [ENTER]")
-					self.servos[i].enable_extended_position_control_mode()
-					self.servos[i].move_to_encoder(self.servos[i].settings['max_encoder']+100)
-					time.sleep(self.pause)
-					self.servos[i].disable_extended_position_control_mode()
-					time.sleep(self.pause)
-					print( "Fixed servo from ID: "+repr(servo_ids[i]))
+				# #These would then be the MX and XM motors
+				# elif (self.motorDir[i] ==1 and enc > 2048) or (self.motorDir[i] == -1 and enc < 2048):
+				# 	print( "------------FAILSAFE-------------")
+				# 	print( "Failsafe is incorporated to prevent gear shear in Model O")
+				# 	print( "Motor encoder postion: ", enc)
+				# 	input = input("As an XM Motor, we can automatically fix this issue for motor " + str(i) + ", proceed? [ENTER]")
+				# 	self.servos[i].enable_extended_position_control_mode()
+				# 	self.servos[i].move_to_encoder(self.servos[i].settings['max_encoder']+100)
+				# 	time.sleep(self.pause)
+				# 	self.servos[i].disable_extended_position_control_mode()
+				# 	time.sleep(self.pause)
+				# 	print( "Fixed servo from ID: "+repr(servo_ids[i]))
 			#Finally, limit the abduction_torque if desired
 			if self.abduction_limit !=1:
 				self.servos[0].enable_current_position_control_mode(self.abduction_limit)
@@ -159,9 +162,9 @@ class OpenHand():
 	def getCurrDir(self):
 		global currdir, take_no
 		print( 'Current directory: ')
-		currdir = raw_input()
+		currdir = input()
 		print( 'Take number: ')
-		take_no = raw_input()
+		take_no = input()
 
 
 	def torqueMotor(self,index,val,pos_val=None):
@@ -354,8 +357,8 @@ class GR2(OpenHand):
 
 
 class Model_O(OpenHand):
-	servo_speed = 1.0
-	max_torque = 0.4
+	servo_speed = 0.1
+	max_torque = 0.3
 	amnt_close = 0.5 #default close position
 	max_close = 0.7 #max motor movement from open to close for individual hand
 
@@ -366,7 +369,7 @@ class Model_O(OpenHand):
 
 	#RESET THE MOTOR MINS FOR FASTER INITIALIZATION
 	motorDir = [1,1,-1,1] # one finger is opposite due to placement on the openhand base
-	motorMin = [0.0,0.22,0.13,0.27]
+	motorMin = [0.0,0.0,0.0,0.0]
 	adduct_amount = 0.37
 	motorMax = [motorMin[0]+adduct_amount,motorMin[1]+max_close,motorMin[2]+max_close,motorMin[3]+max_close] #RX and MX motors may use an offset of 0.48 instead of 0.40
 
@@ -906,3 +909,42 @@ class Model_T(OpenHand):
 		self.servos[0].kill_cont_turn()			#back to position mode
 		self.servos[0].apply_speed(self.servo_speed)	#check in case it was in wheel mode
 		self.moveMotor(0,self.amnt_release)
+
+if __name__ == '__main__':
+	# T = Model_O([port name], [abduction servo[1] id], [right forward servo[2] id],[left reverse servo[3] id],[thumb servo[4] id], [Dynamixel series ("RX", "MX", "XM")])  
+	
+	T = Model_O("/dev/tty.usbserial-FT78LQOC",3,4,1,2, "XM", 0.0, 0.1, 0.1, 0.1)  
+	# T.change_motor_min(0,0.0) #adduct
+	T.change_motor_min(1,0.4) #index
+	T.change_motor_min(2,-0.26) #middle
+	T.change_motor_min(3,0.15) #thumb
+
+	# # T.close([desired tendon length for close (0.0-1.0)])
+	# T.close(0)
+	# T.adduct(0)
+	T.reset()
+	# T.setServoSpeed(0.02)  
+	print("reset done")
+
+	pdb.set_trace()
+
+	# inp = input("== When ready to proceed, press [Enter], to abort press [n]\n")
+	# if (inp == 'n'):
+	# 	sys.exit()
+	# T.power_close(0.5)
+	# # T.reset()
+
+	# inp = input("== When ready to proceed, press [Enter], to abort press [n]\n")
+	# if (inp == 'n'):
+	# 	sys.exit()
+	# # T.power_close(0.8)
+	# T.moveMotor(3,0.7)
+
+	# pdb.set_trace()
+
+	# inp = input("== When ready to proceed, press [Enter], to abort press [n]\n")
+	# if (inp == 'n'):
+	# 	sys.exit()
+	# T.close(0)
+	# T.reset()
+	# T.release()  
