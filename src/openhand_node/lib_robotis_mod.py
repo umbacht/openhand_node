@@ -38,7 +38,7 @@
 from __future__ import print_function
 import serial
 import time
-import _thread
+import thread
 import sys, optparse
 import math
 import random
@@ -59,7 +59,7 @@ class USB2Dynamixel_Device():
         except:
             self.dev_name = dev_name # stores it as a /dev-mapped string for Linux / Mac
 
-        self.mutex = _thread.allocate_lock()	#helps ensure that only a single port is used?
+        self.mutex = thread.allocate_lock()	#helps ensure that only a single port is used?
         self.servo_dev = None
 
         self.acq_mutex()
