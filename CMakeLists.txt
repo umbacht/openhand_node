@@ -23,6 +23,7 @@ add_service_files(
    TorqueServos.srv
    OpenGrasp.srv
    CloseGrasp.srv
+   Adduct.srv
 )
 
 

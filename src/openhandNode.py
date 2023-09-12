@@ -43,6 +43,7 @@ class OpenHandNode():
 		
 		rospy.Service('/openhand_node/open_grasp',OpenGrasp, self.OpenGraspCallback)
 		rospy.Service('/openhand_node/close_grasp',CloseGrasp, self.CloseGraspCallback)
+		rospy.Service('/openhand_node/adduct',Adduct, self.AdductCallback)
 		
 		rospy.spin()		#blocking
 
@@ -105,6 +106,13 @@ class OpenHandNode():
 		resp = OpenGraspResponse()
 		resp.err = 0
 		# print('Opened grasp')
+		return resp
+	
+	def AdductCallback(self, req):
+		resp = AdductResponse()
+		resp.err = 0
+		adduct_amount = req.amnt
+		self.hand.adduct(adduct_amount)
 		return resp
 
 	def TorqueServosCallback(self,req):

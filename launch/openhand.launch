@@ -1,5 +1,8 @@
 <launch>
-	<node pkg="openhand_node" name="openhandNode" type="openhandNode.py" output="screen">
+	s<node pkg="openhand_node" name="openhandNode" type="openhandNode.py" output="screen">
 		<rosparam command="load" file="$(find openhand_node)/param/model_parameters.yaml"/>
 	</node>
+
+	<node pkg="openhand_node" name="openhandPublisher" type="hand_state_publisher.py" output="screen"/>
+
 </launch>
