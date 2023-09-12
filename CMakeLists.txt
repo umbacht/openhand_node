@@ -21,6 +21,8 @@ add_service_files(
    ReadTemperature.srv
    ReadLoad.srv
    TorqueServos.srv
+   OpenGrasp.srv
+   CloseGrasp.srv
 )
 
 

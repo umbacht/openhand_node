@@ -1,12 +1,12 @@
-#!/usr/bin/python2.7
+#!/usr/bin/python
 
 #Andrew Morgan
 #Yale University
 #Updated 09/2018
 
-import openhand_node.syncRW_XMHandler as handler
-import openhand_node.registerDict as registerDict
-import openhand_node.hands as hands
+import syncRW_XMHandler as handler
+import registerDict as registerDict
+import hands as hands
 from openhand_node.srv import *
 import rospy
 
@@ -40,6 +40,10 @@ class OpenHandNode():
 		rospy.Service('/openhand_node/read_load',ReadLoad,self.ReadLoadCallback)
 		rospy.Service('/openhand_node/read_temperature',ReadTemperature,self.ReadTemperatureCallback)
 		rospy.Service('/openhand_node/set_operating_mode',OperatingMode,self.SetOperatingModeCallback)
+		
+		rospy.Service('/openhand_node/open_grasp',OpenGrasp, self.OpenGraspCallback)
+		rospy.Service('/openhand_node/close_grasp',CloseGrasp, self.CloseGraspCallback)
+		
 		rospy.spin()		#blocking
 
 	#This should work in theory, but dynamixels have a mind of their own.
@@ -89,6 +93,19 @@ class OpenHandNode():
 
 		return resp
 
+	def CloseGraspCallback(self, req):
+		resp = CloseGraspResponse()
+		resp.err = 0
+		close_amount = req.amnt
+		self.hand.close(close_amount)
+		return resp
+
+	def OpenGraspCallback(self, req):
+		self.hand.open()
+		resp = OpenGraspResponse()
+		resp.err = 0
+		# print('Opened grasp')
+		return resp
 
 	def TorqueServosCallback(self,req):
 		#This typically only works is the finger is already in torque control mode
