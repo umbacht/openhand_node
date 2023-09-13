@@ -102,10 +102,9 @@ class OpenHandNode():
 		return resp
 
 	def OpenGraspCallback(self, req):
-		self.hand.open()
 		resp = OpenGraspResponse()
 		resp.err = 0
-		# print('Opened grasp')
+		self.hand.open()
 		return resp
 	
 	def AdductCallback(self, req):
