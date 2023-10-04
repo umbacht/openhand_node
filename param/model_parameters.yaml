@@ -29,7 +29,7 @@ servo_type: 'XM'
 servo_port: '/dev/ttyUSB0'
 openhand_type: 'Model_O'
 direction: 1
-motor_offset: [0.0,0.438,-0.20,0.15]
+motor_offset: [0.0,0.438,-0.23,0.15]
 
 #Model O
 # servo_ids: [1,2,3,4]
